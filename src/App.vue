@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="container">
-      <div class="jumbotron">
+      <div class="mt-4 p-5 bg-secondary text-white rounded">
         <titulo :titulo="titulo"></titulo>
         <nueva-tarea v-bind:tareas="tareas" :actualizarContador='actualizarContador'></nueva-tarea>
         <lista-tarea v-bind:tareas="tareas"></lista-tarea>
@@ -22,20 +22,21 @@ export default {
       return {
         titulo: '=Lista de tareas=',
         tareas: [
-          {
-            texto: 'Aprender Vue.js',
-            terminada: false
-          },
-          {
-            texto: 'Aprenedr Angular2',
-            terminada: false
-          },
-          {
-            texto: 'Aprender Ionic',
-            terminada: false
-          }
         ]
       }
+    },
+    created(){
+      this.$http.get('tareas.json').then(respuesta => {return respuesta.json()}).then(respuestaJson => {
+        for(let id in respuestaJson){
+          let tarea = {
+            id: id,
+            texto: respuestaJson[id].texto,
+            terminada: respuestaJson[id].terminada
+
+          }
+          this.tareas.push(tarea);
+        }
+      })
     },
     methods: {
       actualizarContador(){
